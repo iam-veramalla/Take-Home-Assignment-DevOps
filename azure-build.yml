@@ -1,0 +1,28 @@
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '7.0.x'
+
+- script: dotnet test
+  displayName: 'Run Unit Tests'
+
+- script: dotnet build --configuration Release
+  displayName: 'Build Application'
+
+- script: dotnet publish --configuration Release --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Publish Application'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'

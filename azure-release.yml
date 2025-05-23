@@ -1,0 +1,23 @@
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  azureSubscription: '<YOUR-SERVICE-CONNECTION-NAME>'
+  appName: '<YOUR-WEBAPP-NAME>'
+  artifactPath: 'drop'
+
+steps:
+- download: current
+  artifact: drop
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: '$(azureSubscription)'
+    appName: '$(appName)'
+    package: '$(Pipeline.Workspace)/drop'
